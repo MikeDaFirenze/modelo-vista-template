@@ -10,7 +10,8 @@ services:
       context: .
       # Se indica el Dockerfile
       dockerfile: Dockerfile
-    
+    # Se indica el nombre del contenedor
+    container_name: myshop_web_1
     # Se indican los puertos
     ports:
       # Puerto Dockerfile : puerto local
@@ -26,6 +27,8 @@ services:
   db:
     # Se añade la imagen de mysql
     image: mysql:5.7.22
+    # Se indica el nombre del contenedor
+    container_name: myshop_db_1
     # Se añade esta línea para asegurarnos que siempre que se inicie Docker,
     # esté disponible la base de datos
     restart: always

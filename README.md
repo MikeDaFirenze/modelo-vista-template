@@ -43,6 +43,39 @@ Antes de continuar con los siguientes comandos es necesario tomar en cuenta que 
     Este comando correrá el contenedor de docker con la base de datos a utilizar en el sistema de compras myshop, el cual seguirá corriendo en background hasta que sea detenido explícitamente.
 
 
+- Si este comando no se ejecuta correctamente y el contenedor aparece que se encuentra reiniciando constantemente, es posible que la razón sea que se está trabajando dentro de una carpeta compartida de una máquina virtual. Si este es el caso, deberá seguir los siguientes pasos para dar solución al problema.
+
+
+    1. Dentro de nuestra carpeta myshop, vamos a mover el archivo docker-compose.yml fuera de la carpeta compartida con el siguiente comando:
+
+        ```shell
+        $  sudo mv docker-compose.yml ~
+        ```
+    
+    2. Nos movemos hacia la carpeta en donde movimos el archivo docker-compose.yml:
+
+        ```shell
+        $  cd ~
+        ```
+
+    3. Editamos el archivo utilizando el programa nano:
+
+        ```shell
+        $  nano docker-compose.yml
+        ```
+    
+    4. Modificamos las siguientes líneas dentro del servicio 'web':
+
+        - context: /<path_shared_folder>/modelo-vista-template/myshop/
+        - /<path_shared_folder>/modelo-vista-template/myshop/:/app
+    
+    5. Modificamos las siguientes líneas dentro del servicio 'db':
+
+        - /<path_shared_folder>/modelo-vista-template/myshop/.docker/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+        - Borramos la línea: - .dbdata:/var/lib/mysql
+
+    6. Con estas modificaciones volvemos a ejecutar el comando 'sudo docker-compose up -d db' y se debe construir sin problema el contenedor.
+
 - Para el correcto funcionamiento del sistema es necesario crear la base de datos, para esto debemos abrir una conexión con el contenedor de mysql, para lograrlo escribimos en la consola lo siguiente:
 
     ```shell
@@ -154,6 +187,22 @@ Antes de continuar con los siguientes comandos es necesario tomar en cuenta que 
     $ python manage.py migrate
     ```
 
+- Si en la construcción del contenedor de la base de datos se tuvieron problemas por utilizar una carpeta compartida, se deberán realizar los siguientes pasos para que los datos se importen de manera correcta en el sistema.
+
+    1. Entrar al contenedor de la base de datos con el siguiente comando:
+    
+        ```shell
+        $ sudo docker-compose exec db sh
+        ```
+    2. Dentro del contenedor, ejecutar el siguiente comando e indicar la contraseña (root) cuando se solicite:
+
+        ```shell
+        $ mysql -u root -p myshop < /docker-entrypoint-initdb.d/setup.sql
+        ```
+ 
+    3. Si se realizaron con éxito, podemos continuar con el siguiente paso y el sistema deberá funcionar con normalidad.
+
+
 - Si el comando fue exitoso, podremos ingresar a nuestro navegador y verificar que el sistema se ha iniciado con éxito, para esto, ingresamos a la siguiente url: 
 
    > http://localhost:8000/
@@ -172,10 +221,10 @@ Antes de continuar con los siguientes comandos es necesario tomar en cuenta que 
         <img src="docs/pantalla_myshop.png" width="90%" height="90%">
     </p>
 
+- Nota: cada vez que realicemos cambios en nuestra aplicación django, los veremos reflejados de forma casi inmediata (siempre y cuando los contenedores Docker se encuentren en ejecución), esto debido a las configuraciones que se agregaron en el archivo docker-compose. Por esta razón para estar probando nuestro sistema en desarrollo no sería necesario realizar los siguientes pasos. Sin embargo, son añadidos como una opción extra para el desarrollo del sistema.
+
 
 ## Desarrollo
-
-- Nota: cada vez que realicemos cambios en nuestra aplicación django, los veremos reflejados de forma casi inmediata (siempre y cuando los contenedores Docker se encuentren en ejecución), esto debido a las configuraciones que se agregaron en el archivo docker-compose. Por esta razón para estar probando nuestro sistema en desarrollo no sería necesario realizar los siguientes pasos. Sin embargo, son añadidos como una opción extra para el desarrollo del sistema.
 
 - Es necesario contar con python 3.9 o superior y pip3 (las pruebas fueron realizadas con la versión 3.9.1). Se recomienda utilizar [pyenv](https://github.com/pyenv/pyenv) como manejador de versiones de python; una vez instalado se pueden seguir los siguientes comandos para instalar la versión deseada de python, esto hay que realizarlo en la raíz del repositorio:
 
@@ -225,12 +274,21 @@ Antes de continuar con los siguientes comandos es necesario tomar en cuenta que 
     Paquete              |  Versión  | 
    ----------------------|-----------|
     django               |   3.1.7   |
-    mysqlclient          |   2.0.1   |
+    mysqlclient          |   2.0.3   |
     django-mysql         |   3.9     |
     django-environ       |   0.4.5   |
     django-cors-headers  |   3.5.0   |
     Pillow               |   8.1.1   |
     Celery               |   5.0.5   |
+
+- Si alguno de los requerimientos necesarios no se instala correctamente, deberemos proceder a instalarlos manualmente como en el siguiente ejemplo de instalación de mysqlclient:
+
+   ```shell
+    (venv)$ pip3 install mysqlclient==2.0.3
+   ```
+
+- Nota importante: Debemos recordar que al no estar trabajando dentro de los contenedores, necesitaremos tener el manejador de MySql instalado en nuestra máquina local y la base de datos myshop. Además deberemos cambiar las configuraciones necesarias de la base de datos del archivo .env. Por esta razón se recomienda utilizar los contenedores de Docker incluso en tiempo de desarrollo.
+
 
 ### Ejecución del sistema en desarrollo
 
