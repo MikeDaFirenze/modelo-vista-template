@@ -77,12 +77,12 @@ def send(order_id, cart):
     mesagges = []
 
     for item in cart:
-        msg = item['quantity'] + 'x '+ item['product']['name'] +'  $'+ item['total_price']+ '\n'
+        msg = str(item['quantity']) + 'x '+ str(item['product']) +'  $'+ str(item['total_price'])+ '\n'
         mesagges.append(msg)
     
     message_part3 = ' '.join(mesagges)
-    message_part4 = '\n\n\n Total: $'+ cart.get_total_price
+    message_part4 = '\n\n\n Total: $'+ str(cart.get_total_price())
     body = message + message_part2 + message_part3 + message_part4
 
     # Se envía el correo.
-    send_mail(subject, body, '<your_email>', [order.email], fail_silently=False)
+    send_mail(subject, body, 'miguel.angel.vp.98@gmail.com', [order.email], fail_silently=False)
