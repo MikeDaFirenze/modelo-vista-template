@@ -28,7 +28,7 @@
 #--------------------------------------------------------------------------------------------------
 
 from django.shortcuts import render
-from .models import OrderItem, Order
+from .models import OrderItem, Order, Product
 from .forms import OrderCreateForm
 from django.core.mail import send_mail
 from cart.cart import Cart
@@ -85,4 +85,11 @@ def send(order_id, cart):
     body = message + message_part2 + message_part3 + message_part4
 
     # Se envía el correo.
-    send_mail(subject, body, '<your_email>', [order.email], fail_silently=False)
+    send_mail(subject, body, 'miguel.angel.vp.98@gmail.com', [order.email], fail_silently=False)
+
+
+def cancel_order(request):
+    length = OrderItem.objects.all()[len(OrderItem.objects.all())-1]
+    order = OrderItem.objects.all()
+    products = Product.objects.get(id=length.product_id)
+    return render(request, 'orders/order/cancel.html', {'order': order})

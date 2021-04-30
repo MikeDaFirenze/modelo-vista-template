@@ -1,0 +1,45 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}
+    Your orders list 
+{% endblock %}
+
+{% block content %}
+    <h1>Your order list</h1>
+    <table class="cart">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Cancel</th>
+                <th>Order ID</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in order %}
+            <!-- {% with product=item.product %} -->
+            <tr>
+                <td>
+                    <a href="{{ product.get_absolute_url }}">
+                        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
+                    </a>
+                </td>
+                <td>{{ product.name }}</td>
+                
+                <td><a>Quitar</a></td>
+                <td class="text-justify" >{{ item.order_id }}</td>
+                <td class="num">${{ item.price }}</td>
+            </tr>
+            {% endwith %}
+        {% endfor %}
+        </tbody>
+    </table>
+    <p class="text-right">
+        <!-- href="{% url "product_list" %}" class="button light" -->
+        <a>Continue shopping</a>
+        <!-- href="{% url "order_create" %}" class="button" -->
+        <a>Checkout</a>
+    </p>
+{% endblock %}

@@ -29,7 +29,7 @@
             {% with total_items=cart|length %}
                 {% if total_items > 0 %}
                     Your cart: 
-                    <a href="{% url "cart_detail" %}">
+                    <a href="{% url 'cart_detail' %}">
                         {{ total_items }} item{{ total_items|pluralize }}, ${{ cart.get_total_price }}
                     </a>
                 {% else %}
@@ -43,7 +43,7 @@
         </div>
 
         <div class="cart" style="float:right; margin-right:30px; margin-top: 20px;">
-            <a href="">Cancel order</a>
+            <a href="{% url 'cancel_order' %}">Cancel order</a>
         </div>
 
     </div>
