@@ -88,8 +88,11 @@ def send(order_id, cart):
     send_mail(subject, body, 'miguel.angel.vp.98@gmail.com', [order.email], fail_silently=False)
 
 
-def cancel_order(request):
-    length = OrderItem.objects.all()[len(OrderItem.objects.all())-1]
-    order = OrderItem.objects.all()
-    products = Product.objects.get(id=length.product_id)
-    return render(request, 'orders/order/cancel.html', {'order': order})
+def viewOrder(request):
+
+    order = Order.objects.get(id = request.POST.get('orderid'))
+    products = order.get_products()
+    
+    return render(request, 'orders/order/cancel.html', {'order': products})
+
+

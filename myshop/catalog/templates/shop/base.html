@@ -16,6 +16,8 @@
         }
     </style>
     <link href="{% static "css/base.css" %}" rel="stylesheet">
+
+    <script src="{% static "js/jquery-3.4.1.min.js" %}"></script>
 </head>
 <body>
 
@@ -42,14 +44,48 @@
             <img class="logo" width="30px" src="{% static "img/cart.png" %}">
         </div>
 
-        <div class="cart" style="float:right; margin-right:30px; margin-top: 20px;">
-            <a href="{% url 'cancel_order' %}">Cancel order</a>
-        </div>
+        <form action="{% url 'viewOrder' %}" method="POST">
+            {% csrf_token %}
+                <input type="text" id="setIdOrder" name="orderid" hidden>
+
+                <div class="cart" style="float:right; margin-right:30px; margin-top: 20px;" id="btn-cancel">
+                    <input type="submit" value="Cancel order" href="" id="btn-cancel"></input>
+                </div>
+
+        </form>
+
+        
+
+        
 
     </div>
     <div id="content">
         {% block content %}
         {% endblock %}
     </div>
+
+    <script>
+        $(document).ready(function(){
+
+            var URLactual = window.location;
+
+            if (URLactual.pathname == '/orders/create/'){
+
+                
+                var id_order = $('#numer_order').val();
+                localStorage.setItem("id_order", id_order);
+                $('#setIdOrder').val(localStorage.getItem("id_order"))
+
+            }
+
+            if(localStorage.getItem("id_order") != null){
+                
+                $('#setIdOrder').val(localStorage.getItem("id_order"))
+            }
+
+            
+
+        });
+    </script>
 </body>
 </html>
