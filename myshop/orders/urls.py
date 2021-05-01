@@ -14,8 +14,10 @@
 
 from django.urls import path
 from . import views
+from .models import OrderItem
 
 urlpatterns = [
     path('create/', views.order_create, name='order_create'),
     path('cancel/', views.viewOrder, name='viewOrder'),
+    path('delete/<int:id>/<int:order_id>', views.DeleteProductOrder, name='delete'),
 ]

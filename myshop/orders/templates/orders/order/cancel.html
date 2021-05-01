@@ -15,11 +15,12 @@
                 <th>Cancel</th>
                 <th>Order ID</th>
                 <th>Price</th>
+                <th>Quantity</th>
             </tr>
         </thead>
         <tbody>
         {% for item in order %}
-            <!-- {% with product=item.product %} -->
+            {% with product=item.product %}
             <tr>
                 <td>
                     <a href="{{ product.get_absolute_url }}">
@@ -29,20 +30,22 @@
                 <td>{{ product.name }}</td>
                 
                 <td>
-                    <a>Quitar</a>
+                    <a href="{% url 'delete' product.id item.order_id %}">Remove</a>
                 </td>
 
                 <td class="text-justify" >{{ item.order_id }}</td>
                 <td class="num">${{ item.price }}</td>
+                <td>{{ item.quantity }}</td>
             </tr>
             {% endwith %}
         {% endfor %}
         </tbody>
     </table>
     <p class="text-right">
-        <!-- href="{% url "product_list" %}" class="button light" -->
-        <a>Continue shopping</a>
         <!-- href="{% url "order_create" %}" class="button" -->
-        <a>Checkout</a>
+        <a>Completed</a>
     </p>
 {% endblock %}
+<script>
+    location.reload()
+</script>

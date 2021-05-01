@@ -32,6 +32,10 @@ from .models import OrderItem, Order, Product
 from .forms import OrderCreateForm
 from django.core.mail import send_mail
 from cart.cart import Cart
+from django.shortcuts import get_object_or_404, redirect
+from django.http import Http404, HttpResponseRedirect
+from django.contrib import messages
+
 
 
 def order_create(request):
@@ -89,10 +93,18 @@ def send(order_id, cart):
 
 
 def viewOrder(request):
-
-    order = Order.objects.get(id = request.POST.get('orderid'))
+    order = Order.objects.get(id = request.GET.get('orderid'))
     products = order.get_products()
-    
     return render(request, 'orders/order/cancel.html', {'order': products})
 
+def DeleteProductOrder(request, id, order_id):
+    product_to_remove = OrderItem.objects.filter(product=id).first()
+    variable = product_to_remove.id
+    product_to_remove.delete()
+
+    order = Order.objects.get(id = order_id)
+    products = order.get_products()
+    return render(request, 'orders/order/cancel.html', {'order': products})
+
+    
 

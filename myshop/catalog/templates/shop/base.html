@@ -20,7 +20,6 @@
     <script src="{% static "js/jquery-3.4.1.min.js" %}"></script>
 </head>
 <body>
-
     <div id="subheader">
 
         <div style="float:left; margin:0px;">
@@ -44,8 +43,7 @@
             <img class="logo" width="30px" src="{% static "img/cart.png" %}">
         </div>
 
-        <form action="{% url 'viewOrder' %}" method="POST">
-            {% csrf_token %}
+        <form action="{% url 'viewOrder' %}" method="GET">
                 <input type="text" id="setIdOrder" name="orderid" hidden>
 
                 <div class="cart" style="float:right; margin-right:30px; margin-top: 20px;" id="btn-cancel">
@@ -83,7 +81,9 @@
                 $('#setIdOrder').val(localStorage.getItem("id_order"))
             }
 
-            
+            if(localStorage.getItem("id_order") === null){
+                $("#btn-cancel").css("display", "none")
+            }
 
         });
     </script>
