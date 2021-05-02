@@ -24,6 +24,24 @@
 #           |                        |    la orden creada.      |    para notificar la  |
 #           |                        |                          |    compra.            |
 #           +------------------------+--------------------------+-----------------------+
+#           |                        |                          |  - Crea y envía el    |
+#           |                        |  - request: datos locales|    correo electrónico |
+#           |    sendMailCancel()    |    que son solicitados.  |    para notificar la  |
+#           |                        |                          |    modificación de    |
+#           |                        |                          |    una orden previa.  |
+#           +------------------------+--------------------------+-----------------------+
+#           |                        |                          |  - Crea la vista con  |
+#           |       viewOrder()      |  - request: datos locales|    los datos de la    |
+#           |                        |    que son solicitados.  |    orden previamente  |
+#           |                        |                          |    realizada.         |
+#           +------------------------+--------------------------+-----------------------+
+#           |                        |                          |  - Elimina el producto|
+#           |                        |   - id: Id del producto  |    dentro de la lista |
+#           |  DeleteProductOrder()  |    que se está eliminando|    de ordenes, basado |
+#           |                        |   - order_id: Id de la   |    en el id_producto  |
+#           |                        |    orden que contiene el |    y orden que fue    |
+#           |                        |                          |    mandado            |
+#           +------------------------+--------------------------+-----------------------+
 #
 #--------------------------------------------------------------------------------------------------
 
@@ -131,18 +149,27 @@ def sendMailCancel(request):
 
     return redirect('product_list')
 
+
 def viewOrder(request):
+    #Se obtiene la orden en base al id recibido.
     order = Order.objects.get(id = request.GET.get('orderid'))
+    #Se obtiene la lista de todos los productos dentro de la orden.
     products = order.get_products()
+    #Se regresa un contexto para que la página procese todos los productos.
     return render(request, 'orders/order/cancel.html', {'order': products})
 
 def DeleteProductOrder(request, id, order_id):
+    #Se obtiene el producto que se quiere eliminar en base a su id.
     product_to_remove = OrderItem.objects.filter(product=id).first()
+    #Se selecciona el producto dentro de la orden
     variable = product_to_remove.id
+    #Se elimina el producto
     product_to_remove.delete()
-
+    #Nuevamente se obtiene la orden actual
     order = Order.objects.get(id = order_id)
+    #Se obtienen los productos después de su eliminación
     products = order.get_products()
+    #Se vuelve a cargar la lista de ordenes.
     return render(request, 'orders/order/cancel.html', {'order': products})
 
     
