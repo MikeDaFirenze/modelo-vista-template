@@ -437,3 +437,6 @@ Nota: Recordar que en este caso estamos probando el sistema sin la ayuda del con
 
 * **Perla Velasco**
 * **Jorge Alfonso Solís**
+* **Carlos Javier Alonso Caldera**
+* **Miguel Ángel Valadez Piñón**
+* **María Elena Henkel García**

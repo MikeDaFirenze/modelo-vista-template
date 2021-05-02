@@ -92,6 +92,45 @@ def send(order_id, cart):
     send_mail(subject, body, 'miguel.angel.vp.98@gmail.com', [order.email], fail_silently=False)
 
 
+
+def sendMailCancel(request):
+    # Se obtiene la información de la orden.
+    order = Order.objects.get(id=request.GET.get('orderid'))
+
+    products = order.get_products()
+
+    subject = 'Order nr. {} Updated'.format(order.id)
+
+    if products:
+
+        message = 'Dear {},\nYou have successfully updated your order {}.\n\n\n'.format(order.first_name,order.id)
+        message_part2 = 'Your order: \n\n'
+        messages_v2 = []
+
+        products = order.get_products()
+
+        for item in products:
+            msg = str(item.quantity) + 'x '+ str(item.product) +'  $'+ str(item.get_cost())+ '\n'
+            messages_v2.append(msg)
+
+        message_part3 = ' '.join(messages_v2)
+        message_part4 = '\n\n\n Total: $'+ str(order.get_total_cost())
+        body = message + message_part2 + message_part3 + message_part4
+
+    else:
+
+        # Se define el mensaje a enviar.
+        body = 'Dear {},\n\Your order {} has been canceled.'.format(order.first_name,order.id)
+
+    # Se envía el correo.
+    send_mail(subject, body, 'miguel.angel.vp.98@gmail.com', [order.email], fail_silently=False)
+
+    # return render(request, 'orders/order/create.html', {'cart': products})
+    
+    messages.success(request, 'Your order has been updated, check your email for further information')
+
+    return redirect('product_list')
+
 def viewOrder(request):
     order = Order.objects.get(id = request.GET.get('orderid'))
     products = order.get_products()
