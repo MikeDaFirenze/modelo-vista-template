@@ -65,22 +65,30 @@
     <script>
         $(document).ready(function(){
 
+            // Obtenemos url actual del sistema para saber de donde proviene la pericion
             var URLactual = window.location;
 
             if (URLactual.pathname == '/orders/create/'){
 
-                
+                // Obtenemos el numero de la orden generada en el bd
                 var id_order = $('#numer_order').val();
+                // Almacenamos el numero de la orden en el localStorage del navegador
                 localStorage.setItem("id_order", id_order);
+                // Pasamos el valor de la orden en un input oculto para que se 
+                // envie al cancelar la orden
                 $('#setIdOrder').val(localStorage.getItem("id_order"))
 
             }
 
+            // En caso de que se tenga una variable id_order almacenada en
+            // localstorage la vamos a obtener y la vamos a pasar al input oculto de base
             if(localStorage.getItem("id_order") != null){
                 
                 $('#setIdOrder').val(localStorage.getItem("id_order"))
             }
 
+            // Si no tenemos la variable id_order almacenada en localStorage
+            // no mostraremos el boton de cancelar orden
             if(localStorage.getItem("id_order") === null){
                 $("#btn-cancel").css("display", "none")
             }
