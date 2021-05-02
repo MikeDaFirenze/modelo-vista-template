@@ -1,5 +1,8 @@
 {% extends "shop/base.html" %}
 {% load static %}
+<link href="{% static "css/base.css" %}" rel="stylesheet">
+
+<script src="{% static "js/jquery-3.4.1.min.js" %}"></script>
 
 {% block title %}
     Your orders list 
@@ -42,10 +45,21 @@
         </tbody>
     </table>
     <p class="text-right">
-        <!-- href="{% url "order_create" %}" class="button" -->
-        <a>Completed</a>
+        
+        <form action="{% url 'updateOrder' %}" method="GET">
+
+            <input type="text" id="inputOrderId" name="orderid" hidden>
+            <input type="submit" value="Confirm order">
+
+        </form>
     </p>
+
+    <script>
+        $(document).ready(function(){
+            $("#inputOrderId").val(localStorage.getItem("id_order"));
+        });
+    </script>
 {% endblock %}
-<script>
-    location.reload()
-</script>
+
+
+
